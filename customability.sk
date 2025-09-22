@@ -1,0 +1,38 @@
+command select-ability:
+	trigger:
+		set {_a} to chest inventory with 3 rows named "&cAbility Choose"
+		set slot 11 of {_a} to blaze powder named "&6Fire Ability" with lore "&7Right-Click to Select"
+		set slot 13 of {_a} to wind charge named "&fWind Ability" with lore "&7Right-Click to Select"
+		set slot 15 of {_a} to rabbit foot named "&3Speed Ability" with lore "&7Right-Click to Select"
+		open {_a} to player
+
+on inventory click:
+	if event-inventory's name is "&cAbility Choose":
+		cancel event
+        
+		if clicked slot is 11:
+			give player blaze powder named "&6Fire Orb" with lore "&bRight Click to shoot fire ball"
+			close player's inventory
+			send title "&c&lAbility" with subtitle "&6Fire Ability" to player
+			send "&aYou got &6Fire Orb!"
+            
+		if clicked slot is 13:
+			give player wind charge named "&fWind Orb" with lore "&bRight Click to push player's away from you"
+			close player's inventory
+			send title "&c&lAbility" with subtitle "&fWind Ability" to player
+			send "&aYou got &fWind Orb!"
+            
+		if clicked slot is 15:
+			give player rabbit foot named "&3Speed Orb" with lore "&bRight Click to get speed 3 for 10 seconds"
+			close player's inventory
+			send title "&c&lAbility" with subtitle "&3Speed Ability" to player
+			send "&aYou got &3Speed Orb!"
+
+					
+on drop:
+	if name of item is "&6Fire Orb":
+		cancel event
+		if name of item is "&fWind Orb":
+			cancel event
+			if name of item is "&3Speed Orb":
+				cancel event
