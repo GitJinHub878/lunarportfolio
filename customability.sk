@@ -1,3 +1,7 @@
+# Made by HelloLunar
+# Please give credit
+# You can share if you want
+
 command select-ability:
 	trigger:
 		set {_a} to chest inventory with 3 rows named "&cAbility Choose"
@@ -36,3 +40,4 @@ on drop:
 			cancel event
 			if name of item is "&3Speed Orb":
 				cancel event
+
