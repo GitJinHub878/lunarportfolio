@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terminal Portfolio</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Ubuntu+Mono:wght@400;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Ubuntu Mono', monospace;
+            background: linear-gradient(135deg, #2c1810 0%, #1a1a1a 100%);
+            color: #00ff00;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+        
+        /* Desktop Environment */
+        .desktop {
+            position: relative;
+            min-height: 100vh;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.15) 0%, transparent 50%);
+        }
+        
+        /* Taskbar */
+        .taskbar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 48px;
+            background: rgba(0, 0, 0, 0.9);
+            border-top: 2px solid #333;
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            z-index: 1000;
+        }
+        
+        .taskbar-item {
+            padding: 8px 16px;
+            margin: 0 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+        }
+        
+        .taskbar-item:hover {
+            background: rgba(0, 255, 0, 0.2);
+            border-color: #00ff00;
+            transform: translateY(-2px);
+        }
+        
+        .taskbar-item.active {
+            background: rgba(0, 255, 0, 0.3);
+            border-color: #00ff00;
+        }
+        
+        /* Terminal Window */
+        .terminal-window {
+            position: absolute;
+            top: 50px;
+            left: 50px;
+            width: calc(100% - 100px);
+            max-width: 900px;
+            height: calc(100vh - 150px);
+            background: rgba(0, 0, 0, 0.9);
+            border: 1px solid #333;
+            border-radius: 8px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(15px);
+            animation: slideIn 0.8s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        
+        .window-header {
+            height: 40px;
+            background: linear-gradient(to bottom, #444, #222);
+            border-radius: 8px 8px 0 0;
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            border-bottom: 1px solid #555;
+        }
+        
+        .window-controls {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .window-control {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .close { background: #ff5555; }
+        .minimize { background: #ffb86c; }
+        .maximize { background: #50fa7b; }
+        
+        .window-control:hover {
+            transform: scale(1.2);
+            box-shadow: 0 0 10px currentColor;
+        }
+        
+        .window-title {
+            margin-left: auto;
+            margin-right: auto;
+            font-weight: 700;
+            color: #ccc;
+        }
+        
+        /* Terminal Content */
+        .terminal-content {
+            padding: 20px;
+            height: calc(100% - 40px);
+            overflow-y: auto;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        
+        .terminal-line {
+            margin-bottom: 8px;
+            opacity: 0;
+            animation: typeLine 0.5s ease-out forwards;
+        }
+        
+        @keyframes typeLine {
+            from {
+                opacity: 0;
+                transform: translateX(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        .prompt {
+            color: #50fa7b;
+            font-weight: 700;
+        }
+        
+        .command {
+            color: #8be9fd;
+        }
+        
+        .output {
+            color: #f8f8f2;
+            margin-left: 20px;
+        }
+        
+        .error {
+            color: #ff5555;
+        }
+        
+        .success {
+            color: #50fa7b;
+        }
+        
+        .highlight {
+            color: #ffb86c;
+            font-weight: 700;
+        }
+        
+        /* Navigation Menu */
+        .nav-menu {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1001;
+        }
+        
+        .nav-button {
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid #00ff00;
+            color: #00ff00;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Ubuntu Mono', monospace;
+        }
+        
+        .nav-button:hover {
+            background: rgba(0, 255, 0, 0.2);
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.3);
+        }
+        
+        /* Animated Background Elements */
+        .matrix-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .matrix-char {
+            position: absolute;
+            color: rgba(0, 255, 0, 0.3);
+            font-family: 'Ubuntu Mono', monospace;
+            animation: fall 3s linear infinite;
+        }
+        
+        @keyframes fall {
+            0% {
+                transform: translateY(-100px);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh);
+                opacity: 0;
+            }
+        }
+        
+        /* Cursor Animation */
+        .cursor {
+            animation: blink 1s infinite;
+        }
+        
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+        
+        /* Skills Grid */
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .skill-item {
+            background: rgba(0, 255, 0, 0.1);
+            border: 1px solid rgba(0, 255, 0, 0.3);
+            border-radius: 4px;
+            padding: 15px;
+            transition: all 0.3s ease;
+        }
+        
+        .skill-item:hover {
+            background: rgba(0, 255, 0, 0.2);
+            border-color: #00ff00;
+            transform: translateY(-2px);
+        }
+        
+        /* Project Cards */
+        .github-btn {
+            background: rgba(0, 255, 0, 0.1);
+            border: 1px solid #00ff00;
+            color: #00ff00;
+            padding: 8px 16px;
+            margin-top: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Ubuntu Mono', monospace;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 12px;
+        }
+        
+        .github-btn:hover {
+            background: rgba(0, 255, 0, 0.2);
+            transform: scale(1.05);
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+        }
+        .project-card {
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+            transition: all 0.3s ease;
+        }
+        
+        .project-card:hover {
+            border-color: #00ff00;
+            box-shadow: 0 5px 15px rgba(0, 255, 0, 0.2);
+            transform: translateY(-3px);
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .terminal-window {
+                top: 20px;
+                left: 20px;
+                width: calc(100% - 40px);
+                height: calc(100vh - 100px);
+            }
+            
+            .nav-menu {
+                position: relative;
+                top: 0;
+                right: 0;
+                text-align: center;
+                margin-bottom: 20px;
+            }
+            
+            .skills-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="desktop">
+        <!-- Matrix Background Animation -->
+        <div class="matrix-bg" id="matrixBg"></div>
+        
+        <!-- Navigation Menu -->
+        <div class="nav-menu">
+            <button class="nav-button" onclick="showSection('about')">./about</button>
+            <button class="nav-button" onclick="showSection('skills')">./skills</button>
+            <button class="nav-button" onclick="showSection('projects')">./projects</button>
+            <button class="nav-button" onclick="showSection('contact')">./contact</button>
+        </div>
+        
+        <!-- Terminal Window -->
+        <div class="terminal-window">
+            <div class="window-header">
+                <div class="window-controls">
+                    <div class="window-control close"></div>
+                    <div class="window-control minimize"></div>
+                    <div class="window-control maximize"></div>
+                </div>
+                <div class="window-title">portfolio@terminal:~$</div>
+            </div>
+            
+            <div class="terminal-content" id="terminalContent">
+                <div class="terminal-line">
+                    <span class="prompt">user@portfolio:~$</span> 
+                    <span class="command">whoami</span>
+                </div>
+                <div class="terminal-line">
+                    <div class="output">
+                        <span class="highlight">Minecraft Skript Developer</span><br>
+                        <span class="success">Status: Available for hire</span><br>
+                        <span class="output">Specializing in server automation and custom plugins</span>
+                    </div>
+                </div>
+                <div class="terminal-line">
+                    <span class="prompt">user@portfolio:~$</span> 
+                    <span class="command">./welcome.sh</span>
+                </div>
+                <div class="terminal-line">
+                    <div class="output">
+                        Welcome to my interactive portfolio!<br>
+                        Navigate using the buttons above or type commands below.<br>
+                        <span class="highlight">Available commands:</span> about, skills, projects, contact
+                    </div>
+                </div>
+                <div class="terminal-line">
+                    <span class="prompt">user@portfolio:~$</span> 
+                    <span class="cursor">_</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Taskbar -->
+        <div class="taskbar">
+            <div class="taskbar-item active">Terminal</div>
+            <div class="taskbar-item" onclick="showSection('about')">About.txt</div>
+            <div class="taskbar-item" onclick="showSection('skills')">Skills.cfg</div>
+            <div class="taskbar-item" onclick="showSection('projects')">Projects/</div>
+            <div class="taskbar-item" onclick="showSection('contact')">Contact.sh</div>
+        </div>
+    </div>
+
+    <script>
+        // Matrix background animation
+        function createMatrixRain() {
+            const chars = '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン';
+            const matrixBg = document.getElementById('matrixBg');
+            
+            for (let i = 0; i < 50; i++) {
+                const char = document.createElement('div');
+                char.className = 'matrix-char';
+                char.textContent = chars[Math.floor(Math.random() * chars.length)];
+                char.style.left = Math.random() * 100 + '%';
+                char.style.animationDelay = Math.random() * 3 + 's';
+                char.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                matrixBg.appendChild(char);
+                
+                setTimeout(() => {
+                    matrixBg.removeChild(char);
+                }, 5000);
+            }
+        }
+        
+        setInterval(createMatrixRain, 1000);
+        
+        // Terminal sections content
+        const sections = {
+            about: `
+                <div class="terminal-line">
+                    <span class="prompt">user@portfolio:~$</span> 
+                    <span class="command">cat about.txt</span>
+                </div>
+                <div class="terminal-line">
+                    <div class="output">
+                        <span class="highlight">#!/bin/bash</span><br>
+                        <span class="success"># About Me</span><br><br>
+                        Hello! I'm a dedicated Minecraft Skript developer with growing expertise in:<br>
+                        • Skript coding and custom functions<br>
+                        • Server automation through Skript addons<br>
+                        • Creating game mechanics and features<br>
+                        • Learning advanced scripting techniques<br><br>
+                        <span class="highlight">Skill Level:</span> Intermediate Skript Developer<br>
+                        <span class="highlight">Goal:</span> Building cool features and improving my skills<br>
+                        <span class="highlight">Status:</span> Ready to take on new challenges<br><br>
+                        <span class="success">Always learning and ready to script your ideas!</span>
+                    </div>
+                </div>
+            `,
+            skills: `
+                <div class="terminal-line">
+                    <span class="prompt">user@portfolio:~$</span> 
+                    <span class="command">ls -la skills/</span>
+                </div>
+                <div class="terminal-line">
+                    <div class="output">
+                        <span class="highlight">total 8</span><br>
+                        drwxr-xr-x 2 user user 4096 $(date) .<br>
+                        drwxr-xr-x 3 user user 4096 $(date) ..<br><br>
+                    </div>
+                </div>
+                <div class="skills-grid">
+                    <div class="skill-item">
+                        <span class="highlight">Skript Fundamentals</span><br>
+                        • Core Skript syntax<br>
+                        • Commands & functions<br>
+                        • Event handling basics<br>
+                        • Variables & expressions
+                    </div>
+                    <div class="skill-item">
+                        <span class="highlight">Learning Addons</span><br>
+                        • SkQuery basics<br>
+                        • TuSKe for GUIs<br>
+                        • skript-reflect exploration<br>
+                        • Experimenting with new addons
+                    </div>
+                    <div class="skill-item">
+                        <span class="highlight">Server Features</span><br>
+                        • Simple game mechanics<br>
+                        • Basic GUI systems<br>
+                        • Player data handling<br>
+                        • Command creation
+                    </div>
+                    <div class="skill-item">
+                        <span class="highlight">Growing Skills</span><br>
+                        • YAML file management<br>
+                        • Discord webhook basics<br>
+                        • Database connections<br>
+                        • Performance optimization
+                    </div>
+                </div>
+            `,
+            projects: `
+                <div class="terminal-line">
+                    <span class="prompt">user@portfolio:~$</span> 
+                    <span class="command">find ./projects -type f -name "*.sk"</span>
+                </div>
+                <div class="project-card">
+                    <span class="highlight">Shop & Economy System</span><br>
+                    <span class="success">./projects/economy/shop-system.sk</span><br>
+                    <div class="output">
+                        Skript-based economy with GUI shops and player trading.<br>
+                        Features bank system and basic transaction logging.<br>
+                        <span class="highlight">Features:</span> GUI shops, /bal command, item selling
+                        <br><a href="https://github.com/yourusername/minecraft-scripts/tree/main/economy" target="_blank" class="github-btn">📁 View on GitHub</a>
+                    </div>
+                </div>
+                <div class="project-card">
+                    <span class="highlight">Simple PvP Arena</span><br>
+                    <span class="success">./projects/pvp/basic-arena.sk</span><br>
+                    <div class="output">
+                        Basic PvP arena system with join/leave commands.<br>
+                        Includes spectator mode and simple kit distribution.<br>
+                        <span class="highlight">Features:</span> Arena teleportation, basic kits, death handling
+                        <br><a href="https://github.com/yourusername/minecraft-scripts/tree/main/pvp" target="_blank" class="github-btn">📁 View on GitHub</a>
+                    </div>
+                </div>
+                <div class="project-card">
+                    <span class="highlight">Basic Land Protection</span><br>
+                    <span class="success">./projects/protection/simple-claims.sk</span><br>
+                    <div class="output">
+                        Simple land claiming system with basic protection.<br>
+                        Players can claim areas and manage permissions.<br>
+                        <span class="highlight">Features:</span> Claim creation, basic protection, owner commands
+                        <br><a href="https://github.com/yourusername/minecraft-scripts/tree/main/protection" target="_blank" class="github-btn">📁 View on GitHub</a>
+                    </div>
+                </div>
+                <div class="project-card">
+                    <span class="highlight">Custom Commands Pack</span><br>
+                    <span class="success">./projects/commands/utility-commands.sk</span><br>
+                    <div class="output">
+                        Collection of useful server commands and utilities.<br>
+                        Includes teleportation, messaging, and admin tools.<br>
+                        <span class="highlight">Features:</span> /spawn, /msg, /heal, /fly commands
+                        <br><a href="https://github.com/yourusername/minecraft-scripts/tree/main/commands" target="_blank" class="github-btn">📁 View on GitHub</a>
+                    </div>
+                </div>
+            `,
+            contact: `
+                <div class="terminal-line">
+                    <span class="prompt">user@portfolio:~$</span> 
+                    <span class="command">./contact.sh</span>
+                </div>
+                <div class="terminal-line">
+                    <div class="output">
+                        <span class="highlight">#!/bin/bash</span><br>
+                        <span class="success"># Contact Information</span><br><br>
+                        <span class="highlight">Ready to collaborate? Let's connect!</span><br><br>
+                        
+                        <span class="success">📧 Email:</span> your.email@example.com<br>
+                        <span class="success">💬 Discord:</span> YourUsername#1234<br>
+                        <span class="success">🐙 GitHub:</span> github.com/yourusername<br>
+                        <span class="success">💼 LinkedIn:</span> linkedin.com/in/yourprofile<br><br>
+                        
+                        <span class="highlight">Services I Offer:</span><br>
+                        • Custom Skript development from scratch<br>
+                        • Existing script debugging and optimization<br>
+                        • Server feature implementation<br>
+                        • Skript addon integration<br>
+                        • Code documentation and tutorials<br><br>
+                        
+                        <span class="success">Available for:</span><br>
+                        • Skript development positions<br>
+                        • Custom server features<br>
+                        • Script optimization projects<br>
+                        • Code reviews and mentoring<br><br>
+                        
+                        <span class="highlight">Let's create amazing Skript features together!</span>
+                    </div>
+                </div>
+            `
+        };
+        
+        // Terminal typing animation
+        let currentLine = 0;
+        
+        function typeText(text, element, delay = 50) {
+            let i = 0;
+            const interval = setInterval(() => {
+                element.textContent += text[i];
+                i++;
+                if (i >= text.length) {
+                    clearInterval(interval);
+                }
+            }, delay);
+        }
+        
+        function showSection(section) {
+            const content = document.getElementById('terminalContent');
+            content.innerHTML = sections[section];
+            
+            // Animate terminal lines
+            const lines = content.querySelectorAll('.terminal-line');
+            lines.forEach((line, index) => {
+                line.style.animationDelay = (index * 0.1) + 's';
+            });
+            
+            // Update taskbar
+            document.querySelectorAll('.taskbar-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Scroll to top
+            content.scrollTop = 0;
+        }
+        
+        // Initialize with about section
+        document.addEventListener('DOMContentLoaded', () => {
+            showSection('about');
+            
+            // Add click handlers to window controls
+            document.querySelector('.close').addEventListener('click', () => {
+                document.querySelector('.terminal-window').style.opacity = '0.5';
+                setTimeout(() => {
+                    document.querySelector('.terminal-window').style.opacity = '1';
+                }, 500);
+            });
+            
+            document.querySelector('.minimize').addEventListener('click', () => {
+                const terminal = document.querySelector('.terminal-window');
+                terminal.style.transform = 'scale(0.1)';
+                terminal.style.opacity = '0';
+                setTimeout(() => {
+                    terminal.style.transform = 'scale(1)';
+                    terminal.style.opacity = '1';
+                }, 1000);
+            });
+            
+            document.querySelector('.maximize').addEventListener('click', () => {
+                const terminal = document.querySelector('.terminal-window');
+                terminal.style.width = '100%';
+                terminal.style.height = '100%';
+                terminal.style.top = '0';
+                terminal.style.left = '0';
+                terminal.style.borderRadius = '0';
+                
+                setTimeout(() => {
+                    terminal.style.width = 'calc(100% - 100px)';
+                    terminal.style.height = 'calc(100vh - 150px)';
+                    terminal.style.top = '50px';
+                    terminal.style.left = '50px';
+                    terminal.style.borderRadius = '8px';
+                }, 2000);
+            });
+        });
+        
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey) {
+                switch(e.key) {
+                    case '1': showSection('about'); break;
+                    case '2': showSection('skills'); break;
+                    case '3': showSection('projects'); break;
+                    case '4': showSection('contact'); break;
+                }
+            }
+        });
+    </script>
+</body>
+</html>
