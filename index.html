@@ -15,8 +15,8 @@
         
         body {
             font-family: 'Ubuntu Mono', monospace;
-            background: linear-gradient(135deg, #2c1810 0%, #1a1a1a 100%);
-            color: #00ff00;
+            background: linear-gradient(135deg, #0a1628 0%, #001122 50%, #112233 100%);
+            color: #00ccff;
             overflow-x: hidden;
             min-height: 100vh;
         }
@@ -26,8 +26,9 @@
             position: relative;
             min-height: 100vh;
             background: 
-                radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
-                radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.15) 0%, transparent 50%);
+                radial-gradient(circle at 20% 80%, rgba(0, 204, 255, 0.4) 0%, transparent 60%),
+                radial-gradient(circle at 80% 20%, rgba(102, 204, 255, 0.25) 0%, transparent 60%),
+                radial-gradient(circle at 50% 50%, rgba(51, 153, 255, 0.15) 0%, transparent 70%);
         }
         
         /* Taskbar */
@@ -37,34 +38,54 @@
             left: 0;
             right: 0;
             height: 48px;
-            background: rgba(0, 0, 0, 0.9);
-            border-top: 2px solid #333;
-            backdrop-filter: blur(10px);
+            background: linear-gradient(to right, rgba(0, 20, 40, 0.95), rgba(0, 40, 80, 0.95));
+            border-top: 2px solid #00ccff;
+            backdrop-filter: blur(15px);
             display: flex;
             align-items: center;
             padding: 0 16px;
             z-index: 1000;
+            box-shadow: 0 -5px 20px rgba(0, 204, 255, 0.3);
         }
         
         .taskbar-item {
             padding: 8px 16px;
             margin: 0 4px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 4px;
+            background: linear-gradient(135deg, rgba(0, 204, 255, 0.2), rgba(102, 204, 255, 0.1));
+            border-radius: 6px;
             cursor: pointer;
-            transition: all 0.3s ease;
-            border: 1px solid transparent;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(0, 204, 255, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .taskbar-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 204, 255, 0.4), transparent);
+            transition: left 0.6s ease;
+        }
+        
+        .taskbar-item:hover::before {
+            left: 100%;
         }
         
         .taskbar-item:hover {
-            background: rgba(0, 255, 0, 0.2);
-            border-color: #00ff00;
-            transform: translateY(-2px);
+            background: linear-gradient(135deg, rgba(0, 204, 255, 0.4), rgba(102, 204, 255, 0.2));
+            border-color: #00ccff;
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 25px rgba(0, 204, 255, 0.4);
         }
         
         .taskbar-item.active {
-            background: rgba(0, 255, 0, 0.3);
-            border-color: #00ff00;
+            background: linear-gradient(135deg, rgba(0, 204, 255, 0.5), rgba(102, 204, 255, 0.3));
+            border-color: #00ccff;
+            box-shadow: 0 0 20px rgba(0, 204, 255, 0.6);
         }
         
         /* Terminal Window */
@@ -75,62 +96,95 @@
             width: calc(100% - 100px);
             max-width: 900px;
             height: calc(100vh - 150px);
-            background: rgba(0, 0, 0, 0.9);
-            border: 1px solid #333;
-            border-radius: 8px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(15px);
-            animation: slideIn 0.8s ease-out;
+            background: linear-gradient(135deg, rgba(0, 20, 40, 0.95), rgba(0, 40, 80, 0.9));
+            border: 2px solid #00ccff;
+            border-radius: 12px;
+            box-shadow: 
+                0 25px 50px rgba(0, 204, 255, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            animation: slideIn 1.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
         
         @keyframes slideIn {
             from {
                 opacity: 0;
-                transform: translateY(-20px) scale(0.95);
+                transform: translateY(-30px) scale(0.9) rotateX(10deg);
             }
             to {
                 opacity: 1;
-                transform: translateY(0) scale(1);
+                transform: translateY(0) scale(1) rotateX(0deg);
             }
         }
         
         .window-header {
             height: 40px;
-            background: linear-gradient(to bottom, #444, #222);
-            border-radius: 8px 8px 0 0;
+            background: linear-gradient(to bottom, rgba(0, 102, 204, 0.8), rgba(0, 51, 102, 0.9));
+            border-radius: 10px 10px 0 0;
             display: flex;
             align-items: center;
             padding: 0 16px;
-            border-bottom: 1px solid #555;
+            border-bottom: 1px solid rgba(0, 204, 255, 0.5);
+            backdrop-filter: blur(10px);
         }
         
         .window-controls {
             display: flex;
-            gap: 8px;
+            gap: 10px;
         }
         
         .window-control {
-            width: 12px;
-            height: 12px;
+            width: 14px;
+            height: 14px;
             border-radius: 50%;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
         }
         
-        .close { background: #ff5555; }
-        .minimize { background: #ffb86c; }
-        .maximize { background: #50fa7b; }
+        .close { 
+            background: linear-gradient(135deg, #ff6b6b, #ff5252);
+            box-shadow: 0 2px 8px rgba(255, 107, 107, 0.4);
+        }
+        .minimize { 
+            background: linear-gradient(135deg, #ffd93d, #ffb74d);
+            box-shadow: 0 2px 8px rgba(255, 217, 61, 0.4);
+        }
+        .maximize { 
+            background: linear-gradient(135deg, #6bcf7f, #4caf50);
+            box-shadow: 0 2px 8px rgba(107, 207, 127, 0.4);
+        }
         
         .window-control:hover {
-            transform: scale(1.2);
-            box-shadow: 0 0 10px currentColor;
+            transform: scale(1.3);
+            box-shadow: 0 0 15px currentColor;
+        }
+        
+        .window-control::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transition: all 0.6s ease;
+            transform: translate(-50%, -50%);
+        }
+        
+        .window-control:hover::before {
+            width: 100%;
+            height: 100%;
         }
         
         .window-title {
             margin-left: auto;
             margin-right: auto;
             font-weight: 700;
-            color: #ccc;
+            color: #e0f7ff;
+            text-shadow: 0 0 10px rgba(0, 204, 255, 0.5);
         }
         
         /* Terminal Content */
@@ -145,45 +199,50 @@
         .terminal-line {
             margin-bottom: 8px;
             opacity: 0;
-            animation: typeLine 0.5s ease-out forwards;
+            animation: typeLine 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
         }
         
         @keyframes typeLine {
             from {
                 opacity: 0;
-                transform: translateX(-10px);
+                transform: translateX(-20px) rotateY(5deg);
             }
             to {
                 opacity: 1;
-                transform: translateX(0);
+                transform: translateX(0) rotateY(0deg);
             }
         }
         
         .prompt {
-            color: #50fa7b;
+            color: #66ccff;
             font-weight: 700;
+            text-shadow: 0 0 5px rgba(102, 204, 255, 0.5);
         }
         
         .command {
-            color: #8be9fd;
+            color: #99ddff;
+            text-shadow: 0 0 3px rgba(153, 221, 255, 0.3);
         }
         
         .output {
-            color: #f8f8f2;
+            color: #e0f7ff;
             margin-left: 20px;
         }
         
         .error {
-            color: #ff5555;
+            color: #ff6b6b;
+            text-shadow: 0 0 5px rgba(255, 107, 107, 0.3);
         }
         
         .success {
-            color: #50fa7b;
+            color: #66ccff;
+            text-shadow: 0 0 8px rgba(102, 204, 255, 0.4);
         }
         
         .highlight {
-            color: #ffb86c;
+            color: #33aaff;
             font-weight: 700;
+            text-shadow: 0 0 10px rgba(51, 170, 255, 0.6);
         }
         
         /* Navigation Menu */
@@ -195,21 +254,40 @@
         }
         
         .nav-button {
-            background: rgba(0, 0, 0, 0.8);
-            border: 1px solid #00ff00;
-            color: #00ff00;
-            padding: 10px 20px;
-            margin: 5px;
-            border-radius: 4px;
+            background: linear-gradient(135deg, rgba(0, 102, 204, 0.8), rgba(0, 153, 255, 0.6));
+            border: 2px solid #00ccff;
+            color: #e0f7ff;
+            padding: 12px 24px;
+            margin: 6px;
+            border-radius: 8px;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             font-family: 'Ubuntu Mono', monospace;
+            font-weight: 700;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .nav-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.6s ease;
+        }
+        
+        .nav-button:hover::before {
+            left: 100%;
         }
         
         .nav-button:hover {
-            background: rgba(0, 255, 0, 0.2);
-            transform: scale(1.05);
-            box-shadow: 0 0 15px rgba(0, 255, 0, 0.3);
+            background: linear-gradient(135deg, rgba(0, 153, 255, 0.9), rgba(51, 170, 255, 0.7));
+            transform: scale(1.05) translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 204, 255, 0.4);
+            text-shadow: 0 0 10px rgba(224, 247, 255, 0.8);
         }
         
         /* Animated Background Elements */
@@ -225,9 +303,11 @@
         
         .matrix-char {
             position: absolute;
-            color: rgba(0, 255, 0, 0.3);
+            color: rgba(0, 204, 255, 0.4);
             font-family: 'Ubuntu Mono', monospace;
-            animation: fall 3s linear infinite;
+            font-weight: 700;
+            animation: fall 4s linear infinite;
+            text-shadow: 0 0 5px currentColor;
         }
         
         @keyframes fall {
@@ -243,7 +323,9 @@
         
         /* Cursor Animation */
         .cursor {
-            animation: blink 1s infinite;
+            animation: blink 1.2s infinite;
+            color: #00ccff;
+            text-shadow: 0 0 8px rgba(0, 204, 255, 0.6);
         }
         
         @keyframes blink {
@@ -255,58 +337,123 @@
         .skills-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 15px;
+            gap: 20px;
             margin: 20px 0;
         }
         
         .skill-item {
-            background: rgba(0, 255, 0, 0.1);
-            border: 1px solid rgba(0, 255, 0, 0.3);
-            border-radius: 4px;
-            padding: 15px;
-            transition: all 0.3s ease;
+            background: linear-gradient(135deg, rgba(0, 102, 204, 0.2), rgba(51, 153, 255, 0.1));
+            border: 2px solid rgba(0, 204, 255, 0.4);
+            border-radius: 8px;
+            padding: 18px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .skill-item::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(0, 204, 255, 0.1), transparent);
+            transform: rotate(45deg);
+            transition: all 0.6s ease;
+            opacity: 0;
+        }
+        
+        .skill-item:hover::before {
+            opacity: 1;
+            animation: shine 1.5s ease-in-out;
+        }
+        
+        @keyframes shine {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
         }
         
         .skill-item:hover {
-            background: rgba(0, 255, 0, 0.2);
-            border-color: #00ff00;
-            transform: translateY(-2px);
+            background: linear-gradient(135deg, rgba(0, 153, 255, 0.3), rgba(102, 204, 255, 0.2));
+            border-color: #00ccff;
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 15px 30px rgba(0, 204, 255, 0.3);
         }
         
         /* Project Cards */
         .github-btn {
-            background: rgba(0, 255, 0, 0.1);
-            border: 1px solid #00ff00;
-            color: #00ff00;
-            padding: 8px 16px;
-            margin-top: 10px;
-            border-radius: 4px;
+            background: linear-gradient(135deg, rgba(0, 102, 204, 0.3), rgba(51, 153, 255, 0.2));
+            border: 2px solid #00ccff;
+            color: #e0f7ff;
+            padding: 10px 20px;
+            margin-top: 12px;
+            border-radius: 6px;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             font-family: 'Ubuntu Mono', monospace;
             text-decoration: none;
             display: inline-block;
-            font-size: 12px;
+            font-size: 13px;
+            font-weight: 700;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .github-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .github-btn:hover::before {
+            left: 100%;
         }
         
         .github-btn:hover {
-            background: rgba(0, 255, 0, 0.2);
-            transform: scale(1.05);
-            box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+            background: linear-gradient(135deg, rgba(0, 153, 255, 0.5), rgba(102, 204, 255, 0.3));
+            transform: scale(1.08) translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 204, 255, 0.4);
+            text-shadow: 0 0 8px rgba(224, 247, 255, 0.6);
         }
+        
         .project-card {
-            background: rgba(0, 0, 0, 0.6);
-            border: 1px solid #333;
-            border-radius: 8px;
-            padding: 20px;
-            margin: 15px 0;
-            transition: all 0.3s ease;
+            background: linear-gradient(135deg, rgba(0, 40, 80, 0.7), rgba(0, 60, 120, 0.5));
+            border: 2px solid rgba(0, 204, 255, 0.4);
+            border-radius: 12px;
+            padding: 24px;
+            margin: 18px 0;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .project-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #00ccff, #66ccff, #00ccff);
+            transform: scaleX(0);
+            transition: transform 0.6s ease;
+        }
+        
+        .project-card:hover::before {
+            transform: scaleX(1);
         }
         
         .project-card:hover {
-            border-color: #00ff00;
-            box-shadow: 0 5px 15px rgba(0, 255, 0, 0.2);
-            transform: translateY(-3px);
+            border-color: #00ccff;
+            box-shadow: 0 10px 30px rgba(0, 204, 255, 0.3);
+            transform: translateY(-5px) scale(1.02);
+            background: linear-gradient(135deg, rgba(0, 60, 120, 0.8), rgba(0, 80, 160, 0.6));
         }
         
         /* Responsive Design */
@@ -329,6 +476,25 @@
             .skills-grid {
                 grid-template-columns: 1fr;
             }
+        }
+        
+        /* Custom scrollbar */
+        .terminal-content::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .terminal-content::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 4px;
+        }
+        
+        .terminal-content::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #00ccff, #66ccff);
+            border-radius: 4px;
+        }
+        
+        .terminal-content::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #66ccff, #99ddff);
         }
     </style>
 </head>
@@ -397,27 +563,30 @@
     </div>
 
     <script>
-        // Matrix background animation
+        // Enhanced Matrix background animation
         function createMatrixRain() {
-            const chars = '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン';
+            const chars = '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン></>{}[]()';
             const matrixBg = document.getElementById('matrixBg');
             
-            for (let i = 0; i < 50; i++) {
+            for (let i = 0; i < 60; i++) {
                 const char = document.createElement('div');
                 char.className = 'matrix-char';
                 char.textContent = chars[Math.floor(Math.random() * chars.length)];
                 char.style.left = Math.random() * 100 + '%';
-                char.style.animationDelay = Math.random() * 3 + 's';
-                char.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                char.style.fontSize = (Math.random() * 16 + 12) + 'px';
+                char.style.animationDelay = Math.random() * 4 + 's';
+                char.style.animationDuration = (Math.random() * 4 + 3) + 's';
                 matrixBg.appendChild(char);
                 
                 setTimeout(() => {
-                    matrixBg.removeChild(char);
-                }, 5000);
+                    if (matrixBg.contains(char)) {
+                        matrixBg.removeChild(char);
+                    }
+                }, 7000);
             }
         }
         
-        setInterval(createMatrixRain, 1000);
+        setInterval(createMatrixRain, 800);
         
         // Terminal sections content
         const sections = {
@@ -450,8 +619,8 @@
                 <div class="terminal-line">
                     <div class="output">
                         <span class="highlight">total 8</span><br>
-                        drwxr-xr-x 2 user user 4096 $(date) .<br>
-                        drwxr-xr-x 3 user user 4096 $(date) ..<br><br>
+                        drwxr-xr-x 2 user user 4096 Oct 2024 .<br>
+                        drwxr-xr-x 3 user user 4096 Oct 2024 ..<br><br>
                     </div>
                 </div>
                 <div class="skills-grid">
@@ -491,43 +660,21 @@
                     <span class="command">find ./projects -type f -name "*.sk"</span>
                 </div>
                 <div class="project-card">
-                    <span class="highlight">Shop & Economy System</span><br>
-                    <span class="success">./projects/economy/shop-system.sk</span><br>
+                    <span class="highlight">My Work Portfolio</span><br>
+                    <span class="success">./projects/minecraft/smp-systems.sk</span><br>
                     <div class="output">
-                        Skript-based economy with GUI shops and player trading.<br>
-                        Features bank system and basic transaction logging.<br>
-                        <span class="highlight">Features:</span> GUI shops, /bal command, item selling
-                        <br><a href="https://github.com/yourusername/minecraft-scripts/tree/main/economy" target="_blank" class="github-btn">📁 View on GitHub</a>
-                    </div>
-                </div>
-                <div class="project-card">
-                    <span class="highlight">Simple PvP Arena</span><br>
-                    <span class="success">./projects/pvp/basic-arena.sk</span><br>
-                    <div class="output">
-                        Basic PvP arena system with join/leave commands.<br>
-                        Includes spectator mode and simple kit distribution.<br>
-                        <span class="highlight">Features:</span> Arena teleportation, basic kits, death handling
-                        <br><a href="https://github.com/yourusername/minecraft-scripts/tree/main/pvp" target="_blank" class="github-btn">📁 View on GitHub</a>
-                    </div>
-                </div>
-                <div class="project-card">
-                    <span class="highlight">Basic Land Protection</span><br>
-                    <span class="success">./projects/protection/simple-claims.sk</span><br>
-                    <div class="output">
-                        Simple land claiming system with basic protection.<br>
-                        Players can claim areas and manage permissions.<br>
-                        <span class="highlight">Features:</span> Claim creation, basic protection, owner commands
-                        <br><a href="https://github.com/yourusername/minecraft-scripts/tree/main/protection" target="_blank" class="github-btn">📁 View on GitHub</a>
-                    </div>
-                </div>
-                <div class="project-card">
-                    <span class="highlight">Custom Commands Pack</span><br>
-                    <span class="success">./projects/commands/utility-commands.sk</span><br>
-                    <div class="output">
-                        Collection of useful server commands and utilities.<br>
-                        Includes teleportation, messaging, and admin tools.<br>
-                        <span class="highlight">Features:</span> /spawn, /msg, /heal, /fly commands
-                        <br><a href="https://github.com/yourusername/minecraft-scripts/tree/main/commands" target="_blank" class="github-btn">📁 View on GitHub</a>
+                        A comprehensive SMP-based Skript system that I developed for a Minecraft server. This project showcases my ability to create complex, functional server features that enhance gameplay experience.<br><br>
+                        <span class="highlight">Key Features:</span><br>
+                        • Advanced Admin Permission System<br>
+                        • Custom Player Abilities & Powers<br>
+                        • Interactive GUI Management<br>
+                        • Player Data Persistence<br>
+                        • Server Economy Integration<br>
+                        • Custom Command Framework<br><br>
+                        <span class="success">Status:</span> Fully functional and actively used<br>
+                        <span class="success">Performance:</span> Optimized for multiplayer environments<br>
+                        <span class="success">Code Quality:</span> Well-documented and maintainable<br>
+                        <a href="https://github.com/GitJinHub878/lunarportfolio.git" target="_blank" class="github-btn">🚀 View My GitHub Portfolio</a>
                     </div>
                 </div>
             `,
@@ -542,10 +689,9 @@
                         <span class="success"># Contact Information</span><br><br>
                         <span class="highlight">Ready to collaborate? Let's connect!</span><br><br>
                         
-                        <span class="success">📧 Email:</span> your.email@example.com<br>
-                        <span class="success">💬 Discord:</span> YourUsername#1234<br>
-                        <span class="success">🐙 GitHub:</span> github.com/yourusername<br>
-                        <span class="success">💼 LinkedIn:</span> linkedin.com/in/yourprofile<br><br>
+                        <span class="success">📧 Email:</span> jellyking674@gmail.com<br>
+                        <span class="success">💬 Discord:</span> lunar202<br>
+                        <span class="success">🐙 GitHub:</span> github.com/GitJinHub878<br><br>
                         
                         <span class="highlight">Services I Offer:</span><br>
                         • Custom Skript development from scratch<br>
@@ -566,10 +712,8 @@
             `
         };
         
-        // Terminal typing animation
-        let currentLine = 0;
-        
-        function typeText(text, element, delay = 50) {
+        // Enhanced typing animation
+        function typeText(text, element, delay = 30) {
             let i = 0;
             const interval = setInterval(() => {
                 element.textContent += text[i];
@@ -584,10 +728,11 @@
             const content = document.getElementById('terminalContent');
             content.innerHTML = sections[section];
             
-            // Animate terminal lines
+            // Enhanced animation for terminal lines
             const lines = content.querySelectorAll('.terminal-line');
             lines.forEach((line, index) => {
-                line.style.animationDelay = (index * 0.1) + 's';
+                line.style.animationDelay = (index * 0.15) + 's';
+                line.style.animationDuration = '0.8s';
             });
             
             // Update taskbar
@@ -595,60 +740,159 @@
                 item.classList.remove('active');
             });
             
-            // Scroll to top
-            content.scrollTop = 0;
+            // Scroll to top with smooth animation
+            content.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
         }
         
         // Initialize with about section
         document.addEventListener('DOMContentLoaded', () => {
             showSection('about');
             
-            // Add click handlers to window controls
+            // Enhanced window control animations
             document.querySelector('.close').addEventListener('click', () => {
-                document.querySelector('.terminal-window').style.opacity = '0.5';
+                const terminal = document.querySelector('.terminal-window');
+                terminal.style.transform = 'scale(0.8) rotateY(10deg)';
+                terminal.style.opacity = '0.3';
+                terminal.style.filter = 'blur(5px)';
                 setTimeout(() => {
-                    document.querySelector('.terminal-window').style.opacity = '1';
-                }, 500);
+                    terminal.style.transform = 'scale(1) rotateY(0deg)';
+                    terminal.style.opacity = '1';
+                    terminal.style.filter = 'blur(0px)';
+                }, 800);
             });
             
             document.querySelector('.minimize').addEventListener('click', () => {
                 const terminal = document.querySelector('.terminal-window');
-                terminal.style.transform = 'scale(0.1)';
+                terminal.style.transform = 'scale(0.1) translateY(50px)';
                 terminal.style.opacity = '0';
+                terminal.style.borderRadius = '50%';
                 setTimeout(() => {
-                    terminal.style.transform = 'scale(1)';
+                    terminal.style.transform = 'scale(1) translateY(0px)';
                     terminal.style.opacity = '1';
-                }, 1000);
+                    terminal.style.borderRadius = '12px';
+                }, 1200);
             });
             
             document.querySelector('.maximize').addEventListener('click', () => {
                 const terminal = document.querySelector('.terminal-window');
-                terminal.style.width = '100%';
-                terminal.style.height = '100%';
-                terminal.style.top = '0';
-                terminal.style.left = '0';
-                terminal.style.borderRadius = '0';
+                const isMaximized = terminal.style.width === '100%';
                 
-                setTimeout(() => {
+                if (!isMaximized) {
+                    terminal.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
+                    terminal.style.width = '100%';
+                    terminal.style.height = '100%';
+                    terminal.style.top = '0';
+                    terminal.style.left = '0';
+                    terminal.style.borderRadius = '0';
+                    terminal.style.transform = 'scale(1.02)';
+                    
+                    setTimeout(() => {
+                        terminal.style.transform = 'scale(1)';
+                    }, 100);
+                } else {
                     terminal.style.width = 'calc(100% - 100px)';
                     terminal.style.height = 'calc(100vh - 150px)';
                     terminal.style.top = '50px';
                     terminal.style.left = '50px';
-                    terminal.style.borderRadius = '8px';
-                }, 2000);
+                    terminal.style.borderRadius = '12px';
+                    terminal.style.transform = 'scale(0.98)';
+                    
+                    setTimeout(() => {
+                        terminal.style.transform = 'scale(1)';
+                        terminal.style.transition = '';
+                    }, 600);
+                }
             });
         });
         
-        // Keyboard shortcuts
+        // Enhanced keyboard shortcuts
         document.addEventListener('keydown', (e) => {
             if (e.ctrlKey) {
                 switch(e.key) {
-                    case '1': showSection('about'); break;
-                    case '2': showSection('skills'); break;
-                    case '3': showSection('projects'); break;
-                    case '4': showSection('contact'); break;
+                    case '1': 
+                        e.preventDefault();
+                        showSection('about'); 
+                        break;
+                    case '2': 
+                        e.preventDefault();
+                        showSection('skills'); 
+                        break;
+                    case '3': 
+                        e.preventDefault();
+                        showSection('projects'); 
+                        break;
+                    case '4': 
+                        e.preventDefault();
+                        showSection('contact'); 
+                        break;
                 }
             }
+        });
+        
+        // Add floating particles effect
+        function createFloatingParticles() {
+            const desktop = document.querySelector('.desktop');
+            
+            for (let i = 0; i < 20; i++) {
+                const particle = document.createElement('div');
+                particle.style.cssText = `
+                    position: absolute;
+                    width: 4px;
+                    height: 4px;
+                    background: radial-gradient(circle, #00ccff, #66ccff);
+                    border-radius: 50%;
+                    pointer-events: none;
+                    opacity: 0.6;
+                    animation: float ${5 + Math.random() * 5}s ease-in-out infinite;
+                    left: ${Math.random() * 100}%;
+                    top: ${Math.random() * 100}%;
+                    box-shadow: 0 0 10px rgba(0, 204, 255, 0.5);
+                `;
+                
+                desktop.appendChild(particle);
+                
+                setTimeout(() => {
+                    if (desktop.contains(particle)) {
+                        desktop.removeChild(particle);
+                    }
+                }, 10000);
+            }
+        }
+        
+        // Add CSS for floating particles
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes float {
+                0%, 100% { transform: translateY(0px) rotate(0deg); }
+                25% { transform: translateY(-20px) rotate(90deg); }
+                50% { transform: translateY(-10px) rotate(180deg); }
+                75% { transform: translateY(-30px) rotate(270deg); }
+            }
+        `;
+        document.head.appendChild(style);
+        
+        setInterval(createFloatingParticles, 3000);
+        
+        // Enhanced hover effects for terminal content
+        document.addEventListener('DOMContentLoaded', () => {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.transform = 'translateX(0)';
+                        entry.target.style.opacity = '1';
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            // Observe all terminal lines for scroll animations
+            setTimeout(() => {
+                document.querySelectorAll('.terminal-line').forEach(line => {
+                    observer.observe(line);
+                });
+            }, 100);
         });
     </script>
 </body>
